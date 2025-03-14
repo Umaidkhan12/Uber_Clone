@@ -40,6 +40,12 @@ This project is a demo implementation of an Uber-like Android application built 
     - Material Components for Android
     - Kotlin Coroutines
 
+## Download APK
+
+Click below to download the latest version of the app:
+
+[![Download APK](https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android)](APK/app-debug.apk)
+
 ## Installation
 
 1. **Clone the repository:**
