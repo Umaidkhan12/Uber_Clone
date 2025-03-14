@@ -22,7 +22,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -35,7 +37,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var activeSearchType = "PICKUP"
     private var ignoreTextChange = false
     private var preFilledAddress: String? = null
-
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -80,9 +81,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             } else if (activeSearchType == "DROP") {
                 binding.searchDrop.setQuery(query, false)
                 binding.searchDrop.clearFocus()
-//                // For drop location, show the booking bottom sheet.
-//                val rideDetailsFragment = RideDetailsFragment()
-//                rideDetailsFragment.show(supportFragmentManager, rideDetailsFragment.tag)q
+                // For drop location, show the booking bottom sheet.
                 showRideDetails()
             }
             // Clear suggestions.
@@ -106,6 +105,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.recyclerViewSuggestions.visibility = View.GONE
                     return true
                 }
+
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (ignoreTextChange || newText == preFilledAddress) return false
                     handleSearchTextChange(newText)
@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.recyclerViewSuggestions.visibility = View.GONE
                     return true
                 }
+
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (ignoreTextChange || newText == preFilledAddress) return false
                     handleSearchTextChange(newText)
@@ -218,7 +219,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                                 geocoder.getFromLocation(location.latitude, location.longitude, 1)
                                     ?: emptyList()
                             if (addresses.isNotEmpty()) {
-                                val currentAddress = addresses[0].getAddressLine(0) ?: "Current Location"
+                                val currentAddress =
+                                    addresses[0].getAddressLine(0) ?: "Current Location"
                                 withContext(Dispatchers.Main) {
                                     preFilledAddress = currentAddress
                                     ignoreTextChange = true
@@ -235,7 +237,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                     }
                 } else {
-                    Toast.makeText(this, "Unable to fetch current location", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Unable to fetch current location", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         } catch (e: SecurityException) {
